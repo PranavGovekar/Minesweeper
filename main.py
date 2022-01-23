@@ -17,38 +17,41 @@ def find(i,arr):
 
 def checkSurroundingAndFlag(x,y,arr):
     boxes = []
-    count = [0] * 7
+    count = [0] * 8
     indices = [(x+1, y), (x-1, y), (x, y+1), (x, y-1),
                (x+1, y+1), (x-1, y-1), (x-1, y+1), (x+1, y-1)]
     for i in indices:
         print(i)
         if(i[1] > -1 and i[1] < 10 and i[0] > -1 and i[0] < 8):
             print(i)
-            if(arr[i] == str(1)):
+            if(arr[i] == 'green'):
                 count[0] += 1
                 boxes.append(Box(i[1], i[0],arr[i]))
-            elif(arr[i] == str(2)):
+            elif(arr[i] == str(1)):
                 count[1] += 1
                 boxes.append(Box(i[1], i[0], arr[i]))
-            elif(arr[i] == str(3)):
+            elif(arr[i] == str(2)):
                 count[2] += 1
                 boxes.append(Box(i[1], i[0], arr[i]))
-            elif(arr[i] == str(4)):
+            elif(arr[i] == str(3)):
                 count[3] += 1
                 boxes.append(Box(i[1], i[0], arr[i]))
-            elif(arr[i] == 'green'):
+            elif(arr[i] == str(4)):
                 count[4] += 1
                 boxes.append(Box(i[1], i[0], arr[i]))
-            elif(arr[i] == 'null'):
+            elif(arr[i] == str(5)):
                 count[5] += 1
                 boxes.append(Box(i[1], i[0], arr[i]))
-            elif(arr[i] == 'flag'):
+            elif(arr[i] == 'null'):
                 count[6] += 1
+                boxes.append(Box(i[1], i[0], arr[i]))
+            elif(arr[i] == 'flag'):
+                count[7] += 1
                 boxes.append(Box(i[1], i[0], arr[i]))
         else:
             continue
-    print(arr[x, y] == str(1) and count[4] == 1)
-    if (arr[x, y] == str(1) and count[4] == 1):
+    print(arr[x, y] == str(1) and count[0] == 1)
+    if (arr[x, y] == str(1) and count[0] == 1):
         for box in boxes:
             if(box.type == 'green'):
                 time.sleep(1)
@@ -72,6 +75,7 @@ def tellMeWhatThisIs(arg):
     # two = np.array([67, 144, 66])
     three = np.array([211, 47, 47])
     four = np.array([123, 31, 162])
+    five = np.array([255, 143, 0])
     flag = np.array([230, 51, 7])
     green = np.array([162, 209, 73])
     green2 = np.array([170, 215, 81])
@@ -92,6 +96,8 @@ def tellMeWhatThisIs(arg):
                 return 3
             elif(np.array_equal(color, four)):
                 return 4
+            elif(np.array_equal(color, five)):
+                return 5
             elif(np.array_equal(color, flag)):
                 return "flag"
 
@@ -140,8 +146,6 @@ for loop in range(3):
     print(output)
     cords1 = find(1,output)
     for cords in cords1:
-        print("thess are 1s")
-        print(cords)
         checkSurroundingAndFlag(cords[0],cords[1],output)
         output = seeWhatsHapping(game_cords, square_side, x, y)
 
