@@ -1,5 +1,4 @@
 from PIL import ImageGrab
-import cv2  
 import numpy as np 
 import time
 import pyautogui
@@ -10,20 +9,18 @@ class Box:
         self.y = y
         self.type = kind
 
-def find(i,arr):
+def plzDontJudgeMyFunctionNames(i,arr):
     result = np.where(arr == str(i))
     cords = list(zip(result[0], result[1]))
     return cords
 
-def checkSurroundingAndFlag(x,y,arr):
+def checkSurrounding(x,y,arr):
     boxes = []
     count = [0] * 8
     indices = [(x+1, y), (x-1, y), (x, y+1), (x, y-1),
                (x+1, y+1), (x-1, y-1), (x-1, y+1), (x+1, y-1)]
     for i in indices:
-        print(i)
         if(i[1] > -1 and i[1] < 10 and i[0] > -1 and i[0] < 8):
-            print(i)
             if(arr[i] == 'green'):
                 count[0] += 1
                 boxes.append(Box(i[1], i[0],arr[i]))
@@ -50,13 +47,22 @@ def checkSurroundingAndFlag(x,y,arr):
                 boxes.append(Box(i[1], i[0], arr[i]))
         else:
             continue
-    print(arr[x, y] == str(1) and count[0] == 1)
-    if (arr[x, y] == str(1) and count[0] == 1):
-        for box in boxes:
-            if(box.type == 'green'):
-                time.sleep(1)
-                print(box.x, box.y)
-                flag(box.x, box.y)
+    
+    return count, boxes
+
+def markFlag(count,boxes,arr,x,y):
+    for i in range(1,6):
+        if (arr[x, y] == str(i) and count[0] + count[7] == i):
+            for box in boxes:
+                if(box.type == 'green'):
+                    flag(box.x, box.y)
+
+def safeClick(count, arr, x, y):
+    print(arr[x, y], count[7])
+    print(x,y)
+    if (arr[x, y] == str(1) and count[7] == 1):
+        print("I double clicked!!")
+        doubleClick(x,y)
 
 def click(i,j):
     x = 671+(i*62)
@@ -67,6 +73,15 @@ def flag(i, j):
     x = 671+(i*62)
     y = 429+(j*62)
     pyautogui.click(x, y, button='right')
+
+def doubleClick(i,j):
+    x = 671+(i*62)
+    y = 429+(j*62)
+    pyautogui.mouseDown(x,y)
+    pyautogui.mouseDown(x,y,button='right')
+    pyautogui.mouseUp(x, y)
+    pyautogui.mouseUp(x, y,button='right')
+
 
 def tellMeWhatThisIs(arg):
     arr = arg[31, :]
@@ -100,8 +115,6 @@ def tellMeWhatThisIs(arg):
                 return 5
             elif(np.array_equal(color, flag)):
                 return "flag"
-
-
 
 
 def seeWhatsHapping(cords, square_side, x, y):
@@ -141,13 +154,18 @@ easy = [10,8]
 
 time.sleep(3)
 click(4,4)
-for loop in range(3):
+for loop in range(1):
     output = seeWhatsHapping(game_cords, square_side, x, y)
-    print(output)
-    cords1 = find(1,output)
-    for cords in cords1:
-        checkSurroundingAndFlag(cords[0],cords[1],output)
-        output = seeWhatsHapping(game_cords, square_side, x, y)
+    for numbers in range(1,6):
+        cords1 = plzDontJudgeMyFunctionNames(numbers,output)
+        for cords in cords1:
+            output = seeWhatsHapping(game_cords, square_side, x, y)
+            surr = checkSurrounding(cords[0],cords[1],output)
+            markFlag(surr[0], surr[1], output, cords[0], cords[1])
+            output = seeWhatsHapping(game_cords, square_side, x, y)
+            surr = checkSurrounding(cords[0], cords[1], output)
+            safeClick(surr[0], output, cords[0], cords[1])
+            
 
 
 

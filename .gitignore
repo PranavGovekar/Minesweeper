@@ -2,3 +2,5 @@
 /temp.PNG
 /Templates
 /test images
+/from PIL import ImageGrab.py
+/__pycache__
