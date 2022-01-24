@@ -11,6 +11,7 @@ class Box:
 
 def plzDontJudgeMyFunctionNames(i,arr):
     result = np.where(arr == str(i))
+    print(result)
     cords = list(zip(result[0], result[1]))
     return cords
 
@@ -55,14 +56,16 @@ def markFlag(count,boxes,arr,x,y):
         if (arr[x, y] == str(i) and count[0] + count[7] == i):
             for box in boxes:
                 if(box.type == 'green'):
+                    print("Flag")
+                    print(box.x, box.y)
                     flag(box.x, box.y)
 
 def safeClick(count, arr, x, y):
-    print(arr[x, y], count[7])
-    print(x,y)
-    if (arr[x, y] == str(1) and count[7] == 1):
-        print("I double clicked!!")
-        doubleClick(x,y)
+    for i in range(1, 6):
+        if (arr[x, y] == str(i) and count[7] == i and count[0] > 0):
+            print("Click")
+            print(y, x)
+            doubleClick(y,x)
 
 def click(i,j):
     x = 671+(i*62)
@@ -152,9 +155,9 @@ easy = [10,8]
 # output = seeWhatsHapping(game_cords,square_side,x,y)
 # print(output[3][6])
 
-time.sleep(3)
+time.sleep(1)
 click(4,4)
-for loop in range(1):
+for loop in range(15):
     output = seeWhatsHapping(game_cords, square_side, x, y)
     for numbers in range(1,6):
         cords1 = plzDontJudgeMyFunctionNames(numbers,output)
@@ -162,10 +165,14 @@ for loop in range(1):
             output = seeWhatsHapping(game_cords, square_side, x, y)
             surr = checkSurrounding(cords[0],cords[1],output)
             markFlag(surr[0], surr[1], output, cords[0], cords[1])
+    for numbers in range(1, 6):
+        cords1 = plzDontJudgeMyFunctionNames(numbers, output)
+        for cords in cords1:
             output = seeWhatsHapping(game_cords, square_side, x, y)
             surr = checkSurrounding(cords[0], cords[1], output)
             safeClick(surr[0], output, cords[0], cords[1])
-            
+
+
 
 
 
